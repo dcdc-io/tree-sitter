@@ -31,7 +31,7 @@ set -e
 
 web_dir=lib/binding_web
 emscripten_flags="-O3"
-minify_js=1
+minify_js=0
 force_docker=0
 emscripen_version=$(cat "$(dirname "$0")"/../cli/emscripten-version)
 
@@ -94,12 +94,16 @@ $emcc                                            \
   -D NDEBUG=                                     \
   -I lib/src                                     \
   -I lib/include                                 \
+  --minify=0                                     \
   --js-library ${web_dir}/imports.js             \
   --pre-js ${web_dir}/prefix.js                  \
   --post-js ${web_dir}/binding.js                \
   --post-js ${web_dir}/suffix.js                 \
   lib/src/lib.c                                  \
   ${web_dir}/binding.c                           \
+  example/tree-sitter-mustard/src/parser.c       \
+  example/tree-sitter-mustard/src/scanner.c      \
+  example/test-mustard-parser.c                  \
   -o target/scratch/tree-sitter.js
 
 # Use terser to write a minified version of `tree-sitter.js` into
